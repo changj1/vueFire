@@ -7,6 +7,12 @@
       <v-btn icon to="/about">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
+      <v-btn @click="save">
+        <v-icon>mdi-check</v-icon>
+      </v-btn>
+      <v-btn @click="read">
+        Read
+      </v-btn>
       <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </v-app-bar>
     <v-content>
@@ -57,6 +63,7 @@
 import SiteHome from "@/views/site/title";
 
 export default {
+  
   components: { SiteHome },
   name: "App",
 
@@ -70,6 +77,21 @@ export default {
       right: null,
       drawer: false,
     };
+  },
+  mounted() {
+    console.log(this.$firebase);
+  },
+  methods: {
+    save(){
+      this.$firebase.database().ref().child('Dashboard').set({
+        title:'greeting', text:'hello'
+      })
+    },
+    read(){
+      this.$firebase.database().ref().on('value', function (ss) {
+        console.log(ss.val());
+      })
+    }
   },
 };
 </script>
