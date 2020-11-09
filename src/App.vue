@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <SiteHome />
+      <SiteTitle :ptitle="site.title" />
       <v-spacer></v-spacer>
       <v-btn icon to="/about">
         <v-icon>mdi-magnify</v-icon>
@@ -18,80 +18,74 @@
     <v-content>
       <router-view />
     </v-content>
-    <v-footer
-      height="30px"
-      fixed
-      color="primary"
-      dark
-      class="font-weight-medium"
-    >
-      <v-col class="py-2 white--text text-center" cols="12">
-        {{ new Date().getFullYear() }} —
-        <strong style="font-size: 12px;">Vuetify</strong>
-      </v-col>
-    </v-footer>
+    <SiteFooter :footertitle="site.footer"/>
     <v-navigation-drawer app v-model="drawer">
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="title">
-            Application
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            subtext
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-divider></v-divider>
-
-      <v-list dense nav>
-        <v-list-item v-for="item in items" :key="item.title" link>
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <SiteMenu />
     </v-navigation-drawer>
   </v-app>
 </template>
 
 <script>
-import SiteHome from "@/views/site/title";
+import SiteTitle from "@/views/site/title";
+import SiteMenu from "@/views/site/menu";
+import SiteFooter from "@/views/site/footer";
 
 export default {
-  
-  components: { SiteHome },
+  components: { SiteTitle, SiteMenu, SiteFooter },
   name: "App",
 
   data() {
     return {
-      items: [
-        { title: "Dashboard", icon: "mdi-view-dashboard" },
-        { title: "Photos", icon: "mdi-image" },
-        { title: "About", icon: "mdi-help-box" },
-      ],
-      right: null,
+      site: {
+        menu: [],
+        title: "My Title 2020",
+        footer: "My footer 2020",
+      },
       drawer: false,
     };
   },
-  mounted() {
-    console.log(this.$firebase);
+  created() {
+    this.subscribe();
   },
   methods: {
-    save(){
-      this.$firebase.database().ref().child('Dashboard').set({
-        title:'greeting', text:'hello'
-      })
+    save() {
+      this.$firebase
+        .database()
+        .ref()
+        .child("Dashboard")
+        .set({
+          title: "greeting",
+          text: "hello",
+        });
     },
-    read(){
-      this.$firebase.database().ref().on('value', function (ss) {
-        console.log(ss.val());
-      })
-    }
+    read() {
+      this.$firebase
+        .database()
+        .ref()
+        .on("value", function(ss) {
+          console.log(ss.val());
+        });
+    },
+    subscribe() {
+      this.$firebase
+        .database()
+        .ref()
+        .child("site")
+        .on(
+          "value",
+          (ss) => {
+            const v = ss.val();
+            if (!v) {
+              this.$firebase.database().ref().child("site").set(this.site);
+              return
+            }
+            this.site = v;
+          },
+          (e) => {
+            console.log(e.message);
+          }
+        );
+    },
   },
 };
 </script>
