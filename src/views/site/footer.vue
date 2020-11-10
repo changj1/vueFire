@@ -49,10 +49,7 @@ export default {
     save() {
       console.log("save");
       this.$firebase
-        .database()
-        .ref()
-        .child("site")
-        .update({ footer: this.text });
+        .database().ref().child("site").update({ footer: this.text });
       this.dialog = false;
     },
     openDialog() {

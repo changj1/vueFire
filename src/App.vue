@@ -15,9 +15,7 @@
       </v-btn>
       <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </v-app-bar>
-    <v-content>
       <router-view />
-    </v-content>
     <SiteFooter :footertitle="site.footer"/>
     <v-navigation-drawer app v-model="drawer">
       <SiteMenu />
@@ -50,27 +48,20 @@ export default {
   methods: {
     save() {
       this.$firebase
-        .database()
-        .ref()
-        .child("Dashboard")
+        .database().ref().child("Dashboard")
         .set({
           title: "greeting",
           text: "hello",
         });
     },
     read() {
-      this.$firebase
-        .database()
-        .ref()
+      this.$firebase.database().ref()
         .on("value", function(ss) {
           console.log(ss.val());
         });
     },
     subscribe() {
-      this.$firebase
-        .database()
-        .ref()
-        .child("site")
+      this.$firebase.database().ref().child("site")
         .on(
           "value",
           (ss) => {

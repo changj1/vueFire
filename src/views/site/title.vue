@@ -14,6 +14,23 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-model="snackbar"
+    >
+      {{ text2 }}
+
+      <template >
+      <!-- <template v-slot:action="{ attrs }"> -->
+        <v-btn
+          color="yellow"
+          text
+          @click="snackbar = false"
+        >
+          <!-- v-bind="attrs" -->
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-toolbar-title>
 </template>
 
@@ -23,20 +40,34 @@ export default {
   data() {
     return {
       dialog: false,
-      text: this.title
+      text: this.title,
+      snackbar: false,
+      text2: ''
     }
   },
   methods: {
-    save(){
-      console.log("save");
-      this.$firebase.database().ref().child('site').update({title: this.text})
-      this.dialog = false
+    async save(){
+      try{
+        await this.$firebase.database().ref().child('site').update({title: this.text})
+      }
+      catch(e){
+        this.snackbar = true;
+        this.text2 = e.message;
+      }
+      finally{
+        this.dialog = false;
+      }
     },
     openDialog(){
       this.dialog = true;
+
     }
   },
 };
 </script>
 
-<style></style>
+<style>
+.v-snack__content{
+  background-color: blue;
+}
+</style>
