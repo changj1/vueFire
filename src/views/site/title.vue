@@ -14,35 +14,24 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      v-model="snackbar"
-    >
-      {{ text2 }}
-
-      <template >
-      <!-- <template v-slot:action="{ attrs }"> -->
-        <v-btn
-          color="yellow"
-          text
-          @click="snackbar = false"
-        >
-          <!-- v-bind="attrs" -->
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <ISnackBar :errormsg="errormsg" :snackbar="snackbar"/>
   </v-toolbar-title>
 </template>
 
 <script>
+import ISnackBar from '@/components/ISnackBar.vue'
+
 export default {
+  components:{
+    ISnackBar
+  },
   props:['ptitle'],
   data() {
     return {
       dialog: false,
       text: this.title,
       snackbar: false,
-      text2: ''
+      errormsg: ''
     }
   },
   methods: {
@@ -52,7 +41,7 @@ export default {
       }
       catch(e){
         this.snackbar = true;
-        this.text2 = e.message;
+        this.errormsg = e.message;
       }
       finally{
         this.dialog = false;
@@ -67,7 +56,5 @@ export default {
 </script>
 
 <style>
-.v-snack__content{
-  background-color: blue;
-}
+
 </style>
