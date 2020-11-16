@@ -12,4 +12,6 @@ firebase.initializeApp(firebaseConfig);
 
 firebase.auth().onAuthStateChanged(fireuser => store.commit('setFireUser', fireuser))
 
+// firebase.database().ref().child("site").set(this.site);
+
 Vue.prototype.$firebase = firebase;

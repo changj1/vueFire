@@ -1,5 +1,5 @@
-let fruites = ['berry', 'apple', 'bana', 'fu']
+const dfd = require('danfojs-node')
 
-fruites.pop();
-
-console.log(fruites);
+s = new dfd.Series([1, 3, 4, 6, 8])
+s.print()
+console.log(s);

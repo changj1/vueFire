@@ -63,10 +63,15 @@ export default {
         const provider = new this.$firebase.auth.GoogleAuthProvider();
         this.$firebase.auth().languageCode = "ko";
         const result = await this.$firebase.auth().signInWithPopup(provider)
+        const {uid, email, displayName, photoURL} = result.user
+        const newUser = {
+          email, displayName, photoURL, createAt: new Date()
+        }
+        const result2 = this.$firebase.database().ref('users').child(uid).set(newUser);
         // const user = await this.$firebase.auth().signInWithPopup(provider)
         // this.$store.commit('setFireUser', user)
-
-        console.log('login',result.user);
+        
+        console.log('login',result2);
         // throw new Error()
       }catch(e){
         this.snackbar = true;
@@ -74,8 +79,11 @@ export default {
       } 
     },
     signOut(){
+      const uid = this.$store.state.fireUser.uid
+      console.log('logout', uid);
+      this.$firebase.database().ref('users').child(uid).remove()
       this.$firebase.auth().signOut()
-      console.log('logout', this.$store.state.fireUser);
+      
 
     }
   },
